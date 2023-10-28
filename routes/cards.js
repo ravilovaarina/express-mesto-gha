@@ -5,7 +5,7 @@ const {
   createCard,
   likeCard,
   dislikeCard,
-} = require('../../express-mesto-gha/controllers/cards');
+} = require('../controllers/cards');
 
 cardRouter.get('/', getCards);
 cardRouter.delete('/:cardId', deleteCard);

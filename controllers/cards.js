@@ -1,4 +1,4 @@
-const CardModel = require('../../2/models/card');
+const CardModel = require('../models/card');
 
 module.exports.getCards = async (req, res) => {
   try {
