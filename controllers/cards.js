@@ -29,11 +29,16 @@ module.exports.deleteCard = async (req, res) => {
   try {
     const { cardId } = req.params;
     const card = await CardModel.findByIdAndRemove(cardId);
+    if (!card) {
+      return res.status(404).send({
+        message: 'Карточки не существует',
+      });
+    }
     return res.send(card);
   } catch (error) {
     if (error.name === 'CastError') {
-      return res.status(404).send({
-        message: 'Запрашиваемая карточка для удаления не найдена',
+      return res.status(400).send({
+        message: 'Некорректный id карточки',
       });
     }
     return res.status(500).send({ message: 'Ошибка на стороне сервера' });
@@ -51,7 +56,7 @@ module.exports.likeCard = async (req, res) => {
         message: 'Запрашиваемая карточка для добавления лайка не найдена',
       });
     }
-    return res.send(card);
+    return res.status(200).send(card);
   } catch (error) {
     if (error.name === 'CastError') {
       return res.status(400).send({
@@ -73,7 +78,7 @@ module.exports.dislikeCard = async (req, res) => {
         message: 'Запрашиваемая карточка для добавления лайка не найдена',
       });
     }
-    return res.send(card);
+    return res.status(200).send(card);
   } catch (error) {
     if (error.name === 'CastError') {
       return res.status(400).send({
