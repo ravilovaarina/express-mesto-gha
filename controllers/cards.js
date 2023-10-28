@@ -41,16 +41,21 @@ module.exports.deleteCard = async (req, res) => {
 };
 module.exports.likeCard = async (req, res) => {
   try {
-    const like = CardModel.findByIdAndUpdate(
+    const card = CardModel.findByIdAndUpdate(
       req.params.cardId,
       { $addToSet: { likes: req.user._id } },
       { new: true },
     );
-    return res.send(like);
-  } catch (error) {
-    if (error.name === 'CastError') {
+    if (!card) {
       return res.status(404).send({
         message: 'Запрашиваемая карточка для добавления лайка не найдена',
+      });
+    }
+    return res.send(card);
+  } catch (error) {
+    if (error.name === 'CastError') {
+      return res.status(400).send({
+        message: 'Некорректный id карточки',
       });
     }
     return res.status(500).send({ message: 'Ошибка на стороне сервера' });
@@ -58,16 +63,21 @@ module.exports.likeCard = async (req, res) => {
 };
 module.exports.dislikeCard = async (req, res) => {
   try {
-    const dislike = CardModel.findByIdAndUpdate(
+    const card = CardModel.findByIdAndUpdate(
       req.params.cardId,
       { $pull: { likes: req.user._id } },
       { new: true },
     );
-    return res.send(dislike);
+    if (!card) {
+      return res.status(404).send({
+        message: 'Запрашиваемая карточка для добавления лайка не найдена',
+      });
+    }
+    return res.send(card);
   } catch (error) {
     if (error.name === 'CastError') {
-      return res.status(404).send({
-        message: 'Запрашиваемая карточка для удаления лайка не найдена',
+      return res.status(400).send({
+        message: 'Некорректный id карточки',
       });
     }
     return res.status(500).send({ message: 'Ошибка на стороне сервера' });

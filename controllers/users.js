@@ -3,8 +3,16 @@ const User = require('../models/user');
 module.exports.getUsers = async (req, res) => {
   try {
     const user = await User.find({});
-    return res.send(user);
+    if (user) {
+      return res.send(user);
+    }
+    return res.status(404).send({ message: 'Пользователь не найден' });
   } catch (error) {
+    if (error.name === 'CastError') {
+      return res
+        .status(400)
+        .send({ message: 'Некорректный id пользователя' });
+    }
     return res.status(500).send({ message: 'Ошибка на стороне сервера' });
   }
 };
@@ -42,7 +50,7 @@ module.exports.updateProfile = async (req, res) => {
   try {
     const { name, about } = req.body;
     const updatedUser = await User.findByIdAndUpdate(req.user._id, { name, about });
-    return res.send(updatedUser);
+    return res.send({ ...updatedUser, name, about });
   } catch (error) {
     if (error.name === 'ValidationError') {
       return res.status(400).send({
@@ -57,7 +65,7 @@ module.exports.updateAvatar = async (req, res) => {
   try {
     const { avatar } = req.body;
     const updatedAvatar = await User.findByIdAndUpdate(req.user._id, { avatar });
-    return res.send(updatedAvatar);
+    return res.send({ ...updatedAvatar, avatar });
   } catch (error) {
     if (error.name === 'ValidationError') {
       return res.status(400).send({
