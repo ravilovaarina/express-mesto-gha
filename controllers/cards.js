@@ -44,47 +44,52 @@ module.exports.deleteCard = async (req, res) => {
     return res.status(500).send({ message: 'Ошибка на стороне сервера' });
   }
 };
-module.exports.likeCard = async (req, res) => {
-  try {
-    const card = CardModel.findByIdAndUpdate(
-      req.params.cardId,
-      { $addToSet: { likes: req.user._id } },
-      { new: true },
-    );
-    if (!card) {
-      return res.status(404).send({
-        message: 'Запрашиваемая карточка для добавления лайка не найдена',
-      });
-    }
-    return res.send(card);
-  } catch (error) {
-    if (error.name === 'CastError') {
-      return res.status(400).send({
-        message: 'Некорректный id карточки',
-      });
-    }
-    return res.status(500).send({ message: 'Ошибка на стороне сервера' });
-  }
+
+module.exports.likeCard = (req, res) => {
+  CardModel.findByIdAndUpdate(
+    req.params.cardId,
+    { $addToSet: { likes: req.user._id } },
+    { new: true },
+  )
+
+    .then((card) => {
+      if (!card) {
+        return res.status(404).send({
+          message: 'Запрашиваемая карточка для добавления лайка не найдена',
+        });
+      }
+      return res.send(card);
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(400).send({
+          message: 'Некорректный id карточки',
+        });
+      }
+      return res.status(500).send({ message: err.message });
+    });
 };
-module.exports.dislikeCard = async (req, res) => {
-  try {
-    const card = CardModel.findByIdAndUpdate(
-      req.params.cardId,
-      { $pull: { likes: req.user._id } },
-      { new: true },
-    );
-    if (!card) {
-      return res.status(404).send({
-        message: 'Запрашиваемая карточка для добавления лайка не найдена',
-      });
-    }
-    return res.send(card);
-  } catch (error) {
-    if (error.name === 'CastError') {
-      return res.status(400).send({
-        message: 'Некорректный id карточки',
-      });
-    }
-    return res.status(500).send({ message: 'Ошибка на стороне сервера' });
-  }
+
+module.exports.dislikeCard = (req, res) => {
+  CardModel.findByIdAndUpdate(
+    req.params.cardId,
+    { $pull: { likes: req.user._id } },
+    { new: true },
+  )
+    .then((card) => {
+      if (!card) {
+        return res.status(404).send({
+          message: 'Запрашиваемая карточка для удаления лайка не найдена',
+        });
+      }
+      return res.send(card);
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(400).send({
+          message: 'Некорректный id карточки',
+        });
+      }
+      return res.status(500).send({ message: err.message });
+    });
 };
