@@ -52,8 +52,11 @@ module.exports.createUser = async (req, res) => {
 module.exports.updateProfile = async (req, res) => {
   try {
     const { name, about } = req.body;
-    const updatedUser = await User.findByIdAndUpdate(req.user._id, { name, about });
-    return res.send({ ...updatedUser, name, about });
+    // eslint-disable-next-line max-len
+    const updatedUser = await User.findByIdAndUpdate(req.user._id, { name, about }, { runValidators: true });
+    return res.send({
+      _id: updatedUser._id, avatar: updatedUser.avatar, name, about,
+    });
   } catch (error) {
     if (error.name === 'ValidationError') {
       return res.status(400).send({
@@ -67,8 +70,11 @@ module.exports.updateProfile = async (req, res) => {
 module.exports.updateAvatar = async (req, res) => {
   try {
     const { avatar } = req.body;
-    const updatedAvatar = await User.findByIdAndUpdate(req.user._id, { avatar });
-    return res.send({ ...updatedAvatar, avatar });
+    // eslint-disable-next-line max-len
+    const updatedAvatar = await User.findByIdAndUpdate(req.user._id, { avatar }, { runValidators: true });
+    return res.send({
+      _id: updatedAvatar._id, avatar, name: updatedAvatar.name, about: updatedAvatar.about,
+    });
   } catch (error) {
     if (error.name === 'ValidationError') {
       return res.status(400).send({
