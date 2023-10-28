@@ -52,14 +52,14 @@ module.exports.likeCard = async (req, res) => {
       { new: true },
     );
     if (!card) {
-      return res.status(404).send({
+      return res.status(400).send({
         message: 'Запрашиваемая карточка для добавления лайка не найдена',
       });
     }
-    return res.status(200).send(card);
+    return res.send(card);
   } catch (error) {
     if (error.name === 'CastError') {
-      return res.status(400).send({
+      return res.status(404).send({
         message: 'Некорректный id карточки',
       });
     }
@@ -74,14 +74,14 @@ module.exports.dislikeCard = async (req, res) => {
       { new: true },
     );
     if (!card) {
-      return res.status(404).send({
+      return res.status(400).send({
         message: 'Запрашиваемая карточка для добавления лайка не найдена',
       });
     }
-    return res.status(200).send(card);
+    return res.send(card);
   } catch (error) {
     if (error.name === 'CastError') {
-      return res.status(400).send({
+      return res.status(404).send({
         message: 'Некорректный id карточки',
       });
     }
