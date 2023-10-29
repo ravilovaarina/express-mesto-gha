@@ -60,7 +60,7 @@ module.exports.likeCard = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.dislikeCard = (req, res) => {
+module.exports.dislikeCard = (req, res, next) => {
   CardModel.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
@@ -68,18 +68,13 @@ module.exports.dislikeCard = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        return res.status(404).send({
-          message: 'Запрашиваемая карточка для удаления лайка не найдена',
-        });
+        return next(
+          new NotFoundError(
+            'Запрашиваемая карточка для удаления лайка не найдена',
+          ),
+        );
       }
       return res.send(card);
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        return res.status(400).send({
-          message: 'Некорректный id карточки',
-        });
-      }
-      return res.status(500).send({ message: err.message });
-    });
+    .catch(next);
 };

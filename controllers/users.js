@@ -2,7 +2,7 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/Not-found-err');
 const ValidationError = require('../errors/Bad-request-err');
 
-module.exports.getUser = (req, res, next) => {
+module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
@@ -16,18 +16,6 @@ module.exports.getUser = (req, res, next) => {
 module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch(next);
-};
-
-module.exports.getUserById = (req, res, next) => {
-  const { _id } = req.user;
-  User.find({ _id })
-    .then((user) => {
-      if (!user) {
-        next(new NotFoundError('Пользователь не найден'));
-      }
-      return res.send(...user);
-    })
     .catch(next);
 };
 
