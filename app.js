@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const { errors } = require('celebrate');
 const errorHandler = require('./errors/errorHandler');
 const NotFoundError = require('./errors/NotFoundError');
 
@@ -31,6 +32,8 @@ app.use('/cards', require('./routes/cards'));
 app.all('*', (req, res, next) => {
   next(new NotFoundError('Неправильный путь'));
 });
+
+app.use(errors());
 
 app.use(errorHandler);
 
