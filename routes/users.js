@@ -26,6 +26,6 @@ userRouter.patch('/me', celebrate({
     about: Joi.string().min(2).max(30),
   }),
 }), updateProfile);
-userRouter.get('/users/me', getMe);
+userRouter.get('/me', getMe);
 
 module.exports = userRouter;
