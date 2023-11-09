@@ -10,6 +10,7 @@ const {
 } = require('../controllers/users');
 
 userRouter.get('/', getUsers);
+userRouter.get('/me', getMe);
 userRouter.get('/:userId', celebrate({
   params: Joi.object().keys({
     userId: Joi.string().length(24).hex().required(),
@@ -26,6 +27,5 @@ userRouter.patch('/me', celebrate({
     about: Joi.string().min(2).max(30),
   }),
 }), updateProfile);
-userRouter.get('/me', getMe);
 
 module.exports = userRouter;
