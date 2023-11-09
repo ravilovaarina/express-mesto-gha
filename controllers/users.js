@@ -100,15 +100,13 @@ module.exports.login = (req, res, next) => {
 };
 
 module.exports.getMe = (req, res, next) => {
-  console.log(req);
   const { _id } = req.user;
   User.find({ _id })
     .then((user) => {
       if (!user) {
         next(new NotFoundError('Запрашиваемый пользователь не найден'));
       }
-      console.log(...user);
-      return res.send(...user);
+      return res.send(user);
     })
     .catch(next);
 };

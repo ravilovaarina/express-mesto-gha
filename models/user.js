@@ -4,44 +4,47 @@ const isUrl = require('validator/lib/isURL');
 const mongoose = require('mongoose');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    minLength: 2,
-    maxLength: 30,
-    default: 'Жак-Ив Кусто',
-  },
-  about: {
-    type: String,
-    minLength: 2,
-    maxLength: 30,
-    required: true,
-    default: 'Исследователь',
-  },
-  avatar: {
-    type: String,
-    required: true,
-    validate: {
-      validator: (link) => isUrl(link),
-      message: 'Некорректный формат ссылки на аватар',
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      minLength: 2,
+      maxLength: 30,
+      default: 'Жак-Ив Кусто',
     },
-    default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
-  },
-  email: {
-    type: String,
-    required: true,
-    validate: {
-      validator: (v) => isEmail(v),
-      message: 'Некорректный формат почты',
+    about: {
+      type: String,
+      minLength: 2,
+      maxLength: 30,
+      required: true,
+      default: 'Исследователь',
     },
-    unique: true,
+    avatar: {
+      type: String,
+      required: true,
+      validate: {
+        validator: (link) => isUrl(link),
+        message: 'Некорректный формат ссылки на аватар',
+      },
+      default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+    },
+    email: {
+      type: String,
+      required: true,
+      validate: {
+        validator: (v) => isEmail(v),
+        message: 'Некорректный формат почты',
+      },
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+      select: false,
+    },
   },
-  password: {
-    type: String,
-    required: true,
-    select: false,
-  },
-});
+  { versionKey: false },
+);
 
 // eslint-disable-next-line func-names
 userSchema.statics.findUserByCredentials = function (email, password) {
