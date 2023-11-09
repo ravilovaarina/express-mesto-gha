@@ -4,7 +4,7 @@ const NotFoundError = require('../errors/NotFoundError');
 const ForbiddenError = require('../errors/ForbiddenError');
 const ValidationError = require('../errors/ValidationError');
 
-module.exports.getCards = async (req, res, next) => {
+module.exports.getCards = (req, res, next) => {
   CardModel.find({})
     .then((card) => res.send(card))
     .catch(next);

@@ -20,12 +20,12 @@ userRouter.patch('/me/avatar', celebrate({
     avatar: Joi.string().pattern(reg).required(),
   }),
 }), updateAvatar);
-userRouter.patch('/me', updateProfile);
-userRouter.get('/users/me', celebrate({
+userRouter.patch('/me', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
   }),
-}), getMe);
+}), updateProfile);
+userRouter.get('/users/me', getMe);
 
 module.exports = userRouter;
