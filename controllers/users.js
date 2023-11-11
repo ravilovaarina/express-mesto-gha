@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const ConflictError = require('../errors/ConflictError');
+const ValidationError = require('../errors/ValidationError');
 require('dotenv').config();
 
 const { JWT_SECRET = 'JWT_SECRET' } = process.env;
@@ -12,7 +13,7 @@ module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        next(new NotFoundError('Запрашиваемый пользователь не найден'));
+        throw new NotFoundError('Запрашиваемый пользователь не найден');
       }
       return res.send(user);
     })
@@ -54,6 +55,10 @@ module.exports.createUser = (req, res, next) => {
     .catch((err) => {
       if (err.code === 11000) {
         next(new ConflictError('Пользователь уже существует'));
+      } else if (err.name === 'ValidationError') {
+        next(new ValidationError('Переданы некорректные данные при создании пользователя'));
+      } else {
+        next(err);
       }
     });
 };
@@ -96,7 +101,6 @@ module.exports.login = (req, res, next) => {
         httpOnly: true,
         sameSite: true,
       });
-      res.send({ token });
     })
     .catch(next);
 };
@@ -106,7 +110,7 @@ module.exports.getMe = (req, res, next) => {
   User.find({ _id })
     .then((user) => {
       if (!user) {
-        next(new NotFoundError('Запрашиваемый пользователь не найден'));
+        throw new NotFoundError('Запрашиваемый пользователь не найден');
       }
       return res.send(...user);
     })
