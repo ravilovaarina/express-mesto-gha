@@ -1,6 +1,6 @@
 const userRouter = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
-const { reg } = require('../utils/isLink');
+const { allowedUrl } = require('../utils/isLink');
 const {
   getUsers,
   getUserById,
@@ -18,7 +18,7 @@ userRouter.get('/:userId', celebrate({
 }), getUserById);
 userRouter.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().pattern(reg).required(),
+    avatar: Joi.string().pattern(allowedUrl).required(),
   }),
 }), updateAvatar);
 userRouter.patch('/me', celebrate({
