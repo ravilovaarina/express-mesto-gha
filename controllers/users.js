@@ -101,6 +101,7 @@ module.exports.login = (req, res, next) => {
         httpOnly: true,
         sameSite: true,
       });
+      res.send({ message: 'Успешный вход' });
     })
     .catch(next);
 };
